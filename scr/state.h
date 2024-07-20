@@ -31,8 +31,9 @@
 
 struct Board;
 
-
 struct Board *board_create();
+
+void board_init(struct Board *b);
 
 void board_destroy(struct Board *b);
 
