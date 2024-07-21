@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "state.h"
+#include "piece_definitions.h"
 
 #define BOARD_DEFAULT_WIDTH     8
 #define BOARD_DEFAULT_HEIGHT    8
