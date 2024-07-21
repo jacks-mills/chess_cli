@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "state.h"
 
 #define BOARD_DEFAULT_WIDTH     8
@@ -17,15 +18,12 @@ struct Board {
     unsigned int width;
     unsigned int height;
 
-    // Array of non-empty square positions and the corresponding array of
-    // pieces in those positions
-    unsigned int next;
-    unsigned int len;
-    int *positions;
     int *pieces;
 };
 
-void board_init(struct Board *b);
+static int pos_to_index(struct Board *b, int rank, int file);
+static int index_to_rank(struct Board *b, int index);
+static int index_to_file(struct Board *b, int index);
 
 struct Board *board_create() {
     struct Board *b = malloc(sizeof(*b));
@@ -35,61 +33,65 @@ struct Board *board_create() {
     }
 
     memset(b, 0, sizeof(*b));
-    board_init(b);
-
     return b;
 }
 
 void board_init(struct Board *b) {
-   b->width = BOARD_DEFAULT_WIDTH;
-   b->height = BOARD_DEFAULT_HEIGHT;
+    b->width = BOARD_DEFAULT_WIDTH;
+    b->height = BOARD_DEFAULT_HEIGHT;
 
-   b->next = 0;
-   b->len = BOARD_DEFAULT_WIDTH * 4;
-   b->positions = malloc(sizeof(*(b->positions)) * b->len);
-   b->pieces = malloc(sizeof(*(b->pieces)) * b->len);
+    b->pieces = malloc(sizeof(*(b->pieces)) * b->width * b->height);
 
-   int whiteBackRank[BOARD_DEFAULT_WIDTH] = BOARD_DEFAULT_WHITE_BACK_RANK;
-   int blackBackRank[BOARD_DEFAULT_WIDTH] = BOARD_DEFAULT_BLACK_BACK_RANK;
+    int pieceToFill = P_NONE;
+    for (int i = 0; i < (b->width * b->height); i++) {
+        b->pieces[i] = pieceToFill;
+    }
 
-   // Add white pieces to board
-   int rank = 0;
-   for (int file = 0; file < BOARD_DEFAULT_WIDTH; file++) {
-       int pos = rank * b->width + file;
-       b->positions[b->next] = pos;
-       b->pieces[b->next] = whiteBackRank[file];
-       (b->next)++;
-   }
+    int blackBackRank[BOARD_DEFAULT_WIDTH] = BOARD_DEFAULT_BLACK_BACK_RANK;
+    int whiteBackRank[BOARD_DEFAULT_WIDTH] = BOARD_DEFAULT_WHITE_BACK_RANK;
 
-   rank = 1;
-   for (int file = 0; file < BOARD_DEFAULT_WIDTH; file++) {
-       int pos = rank * b->width + file;
-       b->positions[b->next] = pos;
-       b->pieces[b->next] = P_WHITE_PAWN;
-       (b->next)++;
-   }
+    for (int file = 0; file < BOARD_DEFAULT_WIDTH; file++) {
+        int pos;
 
-   // Add black pieces to board
-   rank = BOARD_DEFAULT_HEIGHT - 2;
-   for (int file = 0; file < BOARD_DEFAULT_WIDTH; file++) {
-       int pos = rank * b->width + file;
-       b->positions[b->next] = pos;
-       b->pieces[b->next] = P_BLACK_PAWN;
-       (b->next)++;
-   }
+        pos = pos_to_index(b, 0, file);
+        b->pieces[pos] = whiteBackRank[file];
 
-   for (int file = 0; file < BOARD_DEFAULT_WIDTH; file++) {
-       int pos = rank * b->width + file;
-       b->positions[b->next] = pos;
-       b->pieces[b->next] = blackBackRank[file];
-       (b->next)++;
-   }
+        pos = pos_to_index(b, 1, file);
+        b->pieces[pos] = P_WHITE_PAWN;
 
+        pos = pos_to_index(b, BOARD_DEFAULT_HEIGHT - 1, file);
+        b->pieces[pos] = blackBackRank[file];
+
+        pos = pos_to_index(b, BOARD_DEFAULT_HEIGHT - 2, file);
+        b->pieces[pos] = P_BLACK_PAWN;
+    }
 }
 
 void board_destroy(struct Board *b) {
-    free(b->positions);
     free(b->pieces);
-
     free(b);
+}
+
+int board_get_piece(struct Board *b, int rank, int file) {
+    bool rankOutOfRange = (rank >= b->height || rank < 0);
+    bool fileOutOfRange = (file >= b->width  || file < 0);
+    if (rankOutOfRange || fileOutOfRange) {
+        return -1;
+    }
+
+    return b->pieces[pos_to_index(b, rank, file)];
+}
+
+
+
+static int pos_to_index(struct Board *b, int rank, int file) {
+    return rank * b->width + file;
+}
+
+static int index_to_rank(struct Board *b, int index) {
+    return index / b->width;
+}
+
+static int index_to_file(struct Board *b, int index) {
+    return index % b->width;
 }
