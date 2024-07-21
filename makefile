@@ -25,10 +25,10 @@ uninstall:
 
 
 
-$(TARG): $(OBJS) $(BIN_DIR)
+$(TARG): $(OBJS) | $(BIN_DIR)
 	$(CC) $(CFLAGS)   -o $@ $(filter %.o, $^)
 
-$(OBJS): $(BLD_DIR)/%.o: $(SCR_DIR)/%.c $(BLD_DIR)
+$(OBJS): $(BLD_DIR)/%.o: $(SCR_DIR)/%.c | $(BLD_DIR)
 	$(CC) $(CFLAGS)   -o $@ -c $<
 
 $(BLD_DIR) $(BIN_DIR):
