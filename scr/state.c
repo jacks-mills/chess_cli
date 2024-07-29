@@ -23,8 +23,8 @@ struct Board {
 };
 
 static int pos_to_index(struct Board *b, int rank, int file);
-static int index_to_rank(struct Board *b, int index);
-static int index_to_file(struct Board *b, int index);
+//static int index_to_rank(struct Board *b, int index);
+//static int index_to_file(struct Board *b, int index);
 
 struct Board *board_create() {
     struct Board *b = malloc(sizeof(*b));
@@ -89,10 +89,10 @@ static int pos_to_index(struct Board *b, int rank, int file) {
     return rank * b->width + file;
 }
 
-static int index_to_rank(struct Board *b, int index) {
-    return index / b->width;
-}
+//static int index_to_rank(struct Board *b, int index) {
+//    return index / b->width;
+//}
 
-static int index_to_file(struct Board *b, int index) {
-    return index % b->width;
-}
+//static int index_to_file(struct Board *b, int index) {
+//    return index % b->width;
+//}
