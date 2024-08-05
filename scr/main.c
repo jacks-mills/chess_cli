@@ -1,32 +1,51 @@
 #include <stdio.h>
+#include "piece_definitions.h"
 #include "state.h"
+#include "view.h"
 
 int main(int argc, char **argv) {
     struct Board *board = board_create();
     board_init(board);
 
-    printf("BP: %2i, BK %2i, BB: %2i, BR: %2i, BQ: %2i, BK: %2i\n",
-        P_BLACK_PAWN,
-        P_BLACK_KNIGHT,
-        P_BLACK_BISHOP,
-        P_BLACK_ROOK,
-        P_BLACK_QUEEN,
-        P_BLACK_KING);
+    view_init_screen();
+    view_draw_empty_board();
 
-    printf("WP: %2i, WK %2i, WB: %2i, WR: %2i, WQ: %2i, WK: %2i\n",
-        P_WHITE_PAWN,
-        P_WHITE_KNIGHT,
-        P_WHITE_BISHOP,
-        P_WHITE_ROOK,
-        P_WHITE_QUEEN,
-        P_WHITE_KING);
+    int rank;
+    int colour;
 
-    for (int rank = 7; rank >= 0; rank--) {
-        for (int file = 0; file < 8; file++) {
-            printf("%2i ", board_get_piece(board, rank, file));
-        }
-        printf("\n");
+    rank = 0;
+    colour = P_WHITE;
+    view_draw_piece(rank, 0, colour | P_ROOK);
+    view_draw_piece(rank, 1, colour | P_KNIGHT);
+    view_draw_piece(rank, 2, colour | P_BISHOP);
+    view_draw_piece(rank, 3, colour | P_QUEEN);
+    view_draw_piece(rank, 4, colour | P_KING);
+    view_draw_piece(rank, 5, colour | P_BISHOP);
+    view_draw_piece(rank, 6, colour | P_KNIGHT);
+    view_draw_piece(rank, 7, colour | P_ROOK);
+
+    rank = 1;
+    for (int file = 0; file < 8; file++) {
+        view_draw_piece(rank, file, colour | P_PAWN);
     }
+
+    rank = 7;
+    colour = P_BLACK;
+    view_draw_piece(rank, 0, colour | P_ROOK);
+    view_draw_piece(rank, 1, colour | P_KNIGHT);
+    view_draw_piece(rank, 2, colour | P_BISHOP);
+    view_draw_piece(rank, 3, colour | P_QUEEN);
+    view_draw_piece(rank, 4, colour | P_KING);
+    view_draw_piece(rank, 5, colour | P_BISHOP);
+    view_draw_piece(rank, 6, colour | P_KNIGHT);
+    view_draw_piece(rank, 7, colour | P_ROOK);
+
+    rank = 6;
+    for (int file = 0; file < 8; file++) {
+        view_draw_piece(rank, file, colour | P_PAWN);
+    }
+
+    printf("\r");
 
     board_destroy(board);
     return 0;
