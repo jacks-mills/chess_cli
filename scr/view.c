@@ -12,36 +12,30 @@
 #define BOARD_ORIGIN_ROW    4
 #define BOARD_ORIGIN_COL    8
 
+#define WPLAYER_ORIGIN_ROW  4
+#define WPLAYER_ORIGIN_COL  8
+
+#define BPLAYER_ORIGIN_ROW  4
+#define BPLAYER_ORIGIN_COL  8
+
 
 static void draw_tile();
+static void draw_empty_board();
+static void reset_pieces();
+
 static void set_tile_colour(int rank, int file);
 static void set_piece_colour(int piece);
+
 static char *piece_to_string(int piece);
 
 void view_init_screen() {
+    // clear terminal
     CURSOR_SET(1, 1);
     SCREEN_CLEAR();
-}
 
-void view_draw_empty_board() {
-    CURSOR_SET(BOARD_ORIGIN_ROW, BOARD_ORIGIN_COL);
-    for (int rank = (BOARD_RANKS - 1); rank >= 0; rank--) {
-        for (int file = 0; file < BOARD_FILES; file++) {
-            set_tile_colour(rank, file);
-            draw_tile();
-        }
+    draw_empty_board();
 
-        CURSOR_MOVE_LEFT(TILE_CHAR_WIDTH * BOARD_FILES);
-        CURSOR_MOVE_DOWN(TILE_CHAR_HEIGHT);
-    }
-
-    GRAPHICS_RESET();
-
-    CURSOR_SET(
-        BOARD_ORIGIN_ROW + (TILE_CHAR_HEIGHT * BOARD_RANKS),
-        BOARD_ORIGIN_COL);
-
-    fflush(stdout);
+    reset_pieces();
 }
 
 void view_draw_piece(int rank, int file, int piece) {
@@ -67,7 +61,44 @@ void view_draw_piece(int rank, int file, int piece) {
     fflush(stdout);
 }
 
+void draw_empty_board() {
+    CURSOR_SET(BOARD_ORIGIN_ROW, BOARD_ORIGIN_COL);
+    for (int rank = (BOARD_RANKS - 1); rank >= 0; rank--) {
+        for (int file = 0; file < BOARD_FILES; file++) {
+            set_tile_colour(rank, file);
+            draw_tile();
+        }
 
+        CURSOR_MOVE_LEFT(TILE_CHAR_WIDTH * BOARD_FILES);
+        CURSOR_MOVE_DOWN(TILE_CHAR_HEIGHT);
+    }
+
+    GRAPHICS_RESET();
+
+    CURSOR_SET(
+        BOARD_ORIGIN_ROW + (TILE_CHAR_HEIGHT * BOARD_RANKS),
+        BOARD_ORIGIN_COL);
+
+    fflush(stdout);
+}
+
+static void reset_pieces() {
+    int backRow[BOARD_FILES] = {
+        P_ROOK, P_KNIGHT, P_BISHOP, P_QUEEN, 
+        P_KING, P_BISHOP, P_KNIGHT, P_ROOK};
+
+    int frontRow[BOARD_FILES] = {
+        P_PAWN, P_PAWN, P_PAWN, P_PAWN, 
+        P_PAWN, P_PAWN, P_PAWN, P_PAWN};
+
+    for (int file = 0; file < BOARD_FILES; file++) {
+        view_draw_piece(0, file, P_WHITE | backRow[file]);
+        view_draw_piece(1, file, P_WHITE | frontRow[file]);
+
+        view_draw_piece(BOARD_RANKS - 1, file, P_BLACK | backRow[file]);
+        view_draw_piece(BOARD_RANKS - 2, file, P_BLACK | frontRow[file]);
+    }
+}
 
 static void draw_tile() {
     for (int rows = 0; rows < TILE_CHAR_HEIGHT; rows++) {

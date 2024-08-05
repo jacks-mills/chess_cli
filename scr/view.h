@@ -3,7 +3,6 @@
 
 #include "piece_definitions.h"
 
-
 #define ESC "\033"
 
 #define SCREEN_CLEAR()              printf(ESC "[2J")
@@ -36,7 +35,7 @@
 
 
 void view_init_screen();
-void view_draw_empty_board();
+
 void view_draw_piece(int rank, int file, int piece);
 
 
