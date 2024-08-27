@@ -1,12 +1,12 @@
 CC := gcc
 CFLAGS := -std=c99 -Wall -pedantic
 
-SCR_DIR := ./scr
+SRC_DIR := ./src
 BLD_DIR := ./bld
 BIN_DIR := ./bin
 
-SCRS := $(shell find $(SRC_DIR) -name *.[ch])
-OBJS := $(patsubst $(SCR_DIR)/%.c, $(BLD_DIR)/%.o, $(filter %.c, $(SCRS)))
+SRCS := $(shell find $(SRC_DIR) -name *.[ch])
+OBJS := $(patsubst $(SRC_DIR)/%.c, $(BLD_DIR)/%.o, $(filter %.c, $(SRCS)))
 TARG := $(BIN_DIR)/chess
 
 .PHONY: all clean install uninstall
@@ -28,7 +28,7 @@ uninstall:
 $(TARG): $(OBJS) | $(BIN_DIR)
 	$(CC) $(CFLAGS)   -o $@ $(filter %.o, $^)
 
-$(OBJS): $(BLD_DIR)/%.o: $(SCR_DIR)/%.c | $(BLD_DIR)
+$(OBJS): $(BLD_DIR)/%.o: $(SRC_DIR)/%.c | $(BLD_DIR)
 	$(CC) $(CFLAGS)   -o $@ -c $<
 
 $(BLD_DIR) $(BIN_DIR):
