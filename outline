@@ -14,6 +14,21 @@ features:
 * checking if a player is in checkmate
 
 
+state tracked:
+* pieces at what position
+* taken pieces
+
+state interface:
+board_create()
+board_destroy(board)
+
+board_get_piece(board, rank, file)
+board_set_piece(board, rank, file)
+board_move_piece(board, fromRank, fromFile, toRank, toFile)
+board_is_check(board)
+board_is_checkmate(board)
+
+
 # control
 
 
@@ -30,7 +45,7 @@ features:
 * take commands from users
 * display current player turn
 * chess clock
-* track pieces taken
+* display pieces taken
 * promotions (piece selection)
 
 should display:
@@ -38,19 +53,29 @@ should display:
 
 
 
+view system can be thought of as a combination of subsystems, should be coded with this in mind (as different individual subsystems)
+
+
 view interface:
 
-view_init()
-view_draw_piece(rank, file, piece)
 
+# initialise subsystems
+view_init()
+
+# board
+view_set_piece(rank, file, piece)
+view_set_check(rank, file)
+
+# side information
 view_set_player(player)
 view_set_taken(player, pieces)
 view_set_clock(player, time)
 
-view_set_check(rank, file)
-
+# player input
 view_get_promotion()
 view_get_move(*rank, *file, *piece)
+view_get_start()
+view_print_illegal_move()
 
 
 # thinking through model view controller architecture
