@@ -1,0 +1,65 @@
+
+each component should be decoupled from each other
+
+
+# state
+
+features:
+* moving pieces
+* rotate board for players turn
+* move pieces with commands
+
+(requires knowledge about how pieces move)
+* checking if a player is in check
+* checking if a player is in checkmate
+
+
+# control
+
+
+# viewer
+should not do things 'automatically' e.g. if a player is in check should
+not automatically display that information. Should be manually set.
+
+viewer may require some state tracking? (hopefully not)
+
+ideally view should not track state (though may make assumptions about
+what has been drawn to the screen)
+
+features:
+* take commands from users
+* display current player turn
+* chess clock
+* track pieces taken
+* promotions (piece selection)
+
+should display:
+* pieces in check
+
+
+
+view interface:
+
+view_init()
+view_draw_piece(rank, file, piece)
+
+view_set_player(player)
+view_set_taken(player, pieces)
+view_set_clock(player, time)
+
+view_set_check(rank, file)
+
+view_get_promotion()
+view_get_move(*rank, *file, *piece)
+
+
+# thinking through model view controller architecture
+
+how to handle asynchronous events? e.g:
+* updating timer
+* button press (of some kind)
+
+
+
+
+
